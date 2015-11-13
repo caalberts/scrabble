@@ -1,0 +1,24 @@
+{
+  "name": "project01",
+  "version": "1.0.0",
+  "description": "A scrabble game for GA WDI project",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caalberts/scrabble.git"
+  },
+  "keywords": [
+    "scrabble",
+    "ga",
+    "wdi"
+  ],
+  "author": "Albert Salim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caalberts/scrabble/issues"
+  },
+  "homepage": "https://github.com/caalberts/scrabble#readme"
+}
