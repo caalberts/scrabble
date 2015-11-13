@@ -4,11 +4,22 @@
   "description": "A scrabble game for GA WDI project",
   "main": "index.js",
   "scripts": {
-    "test": "standard"
+    "start": "npm run build && npm run start-server",
+    "start-server": "http-server dist",
+    "test": "standard",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && mkdir dist && npm run build-html && npm run build-css && npm run build-js",
+    "build-html": "cp game/index.html dist/index.html",
+    "build-css": "cp game/scrabble.css dist/scrabble.css",
+    "build-js": "browserify game/scrabble.js --outfile dist/scrabble.js --transform babelify",
+    "watch": "npm run build && npm run watch-js & npm run watch-css & npm run watch-html & npm run start-server",
+    "watch-html": "watch-spawn -p 'game/index.html' npm run build-html",
+    "watch-css": "watch-spawn -p 'game/scrabble.css' npm run build-css",
+    "watch-js": "watchify game/scrabble.js --outfile dist/scrabble.js --transform babelify --verbose"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caalberts/scrabble.git"
+    "url": "https://github.com/caalberts/scrabble.git"
   },
   "keywords": [
     "scrabble",
@@ -26,9 +37,11 @@
     "babel-preset-stage-0": "^6.1.18",
     "babelify": "^7.2.0",
     "browserify": "^12.0.1",
-    "http-server": "^0.8.5"
+    "http-server": "^0.8.5",
+    "standard": "^5.3.1"
   },
   "devDependencies": {
+    "watch-spawn": "^1.0.6",
     "watchify": "^3.6.0"
   }
 }
