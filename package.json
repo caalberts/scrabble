@@ -20,5 +20,15 @@
   "bugs": {
     "url": "https://github.com/caalberts/scrabble/issues"
   },
-  "homepage": "https://github.com/caalberts/scrabble#readme"
+  "homepage": "https://github.com/caalberts/scrabble#readme",
+  "dependencies": {
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-stage-0": "^6.1.18",
+    "babelify": "^7.2.0",
+    "browserify": "^12.0.1",
+    "http-server": "^0.8.5"
+  },
+  "devDependencies": {
+    "watchify": "^3.6.0"
+  }
 }
