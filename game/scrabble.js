@@ -22,6 +22,8 @@ if (player) {
   currentPlayer = 'player2'
 }
 
+document.querySelector('.end-turn-button').addEventListener('click', endTurn)
+
 var rack = document.querySelector('.player1-rack')
 var board = Array.from(document.querySelectorAll('.board .tile'))
 var dragdropArea = [rack].concat(board)
