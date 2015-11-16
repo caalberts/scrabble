@@ -22,7 +22,7 @@ if (player) {
   currentPlayer = 'player2'
 }
 
-document.querySelector('.end-turn-button').addEventListener('click', endTurn)
+document.querySelector('.submit').addEventListener('click', submit)
 
 var rack = document.querySelector('.player1-rack')
 var board = Array.from(document.querySelectorAll('.board .tile'))
@@ -48,7 +48,7 @@ function dealTile () {
   return piece
 }
 
-function endTurn () {
+function submit () {
   setRack(currentPlayer)
   player = !player
 }
