@@ -9,7 +9,7 @@ export default function drawScrabbleBoard () {
     line.className = 'row ' + row + ' row-' + row
     cols.forEach(col => {
       var tile = document.createElement('div')
-      tile.className = 'tile ' + 'row-' + row + ' ' + 'col-' + col
+      tile.className = 'tile ' + 'row-' + row + ' ' + 'col-' + col + ' board-tile'
       tile.id = row + col
       line.appendChild(tile).classList.add(row + col)
     })

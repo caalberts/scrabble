@@ -23,21 +23,31 @@ body {
   flex-direction: row;
   justify-content: center;
 }
-.tile, .slot {
+.tile {
   height: 40px;
   width: 40px;
   border: 1px solid black;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
-.tile:after {
+.tile:before {
   color: white;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
 }
 .start-tile {
   background: white;
 }
-.start-tile:after {
+.start-tile:before {
   content: '*';
   color: black;
   text-align: center;
@@ -46,25 +56,25 @@ body {
 .double-letter {
   background: black;
 }
-.double-letter:after {
+.double-letter:before {
   content: '2L';
 }
 .triple-letter {
   background: green;
 }
-.triple-letter:after {
+.triple-letter:before {
   content: '3L'
 }
 .double-word {
   background: red;
 }
-.double-word:after {
+.double-word:before {
   content: '2W'
 }
 .triple-word {
   background: orange;
 }
-.triple-word:after {
+.triple-word:before {
   content: '3W'
 }
 .player {
@@ -88,6 +98,8 @@ body {
   flex-direction: row;
 }
 .rack {
+  width: 300px;
+  height: 50px;
   align-self: center;
   background: brown;
   display: flex;
@@ -95,6 +107,13 @@ body {
   align-items: center;
   justify-content: center;
 }
-.slot {
+.letter-piece {
   background: salmon;
+  width: 35px;
+  height: 35px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
