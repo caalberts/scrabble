@@ -5,29 +5,28 @@ import dragula from 'dragula'
 
 // create inventory of tiles
 var inventory = letters
-var player = true
+var player = false
 var currentPlayer
+var draft = []
+var drake = dragula({
+  accepts: function (el, target, source, sibling) {
+    return target.children.length === 0
+  }}).on('drop', (el) => {
+    draft.push(el)
+    el.classList.toggle('draft')
+  })
 // draw Scrabble board
 drawScrabbleBoard()
 // draw Racks and Score Board then deal tiles
-
 var players = ['player1', 'player2']
 players.forEach(player => setRack(player))
 
-if (player) {
-  document.body.classList.add('player1')
-  currentPlayer = 'player1'
-} else {
-  document.body.classList.add('player2')
-  currentPlayer = 'player2'
-}
-
+// create event listeners on buttons
+document.querySelector('.reset').addEventListener('click', reset)
 document.querySelector('.submit').addEventListener('click', submit)
+document.querySelector('.pass').addEventListener('click', pass)
 
-var rack = document.querySelector('.player1-rack')
-var board = Array.from(document.querySelectorAll('.board .tile'))
-var dragdropArea = [rack].concat(board)
-dragula(dragdropArea)
+changePlayer()
 
 function setRack (player) {
   var rack = document.querySelector('.' + player + '-rack')
@@ -43,12 +42,39 @@ function setRack (player) {
 }
 
 function dealTile () {
-  var piece = sample(inventory)
-  inventory.splice(inventory.indexOf(piece), 1)
-  return piece
+  if (inventory.length > 0) {
+    var piece = sample(inventory)
+    inventory.splice(inventory.indexOf(piece), 1)
+    return piece
+  }
+}
+
+function reset () {
+  draft.forEach(piece => {
+    document.body.querySelector('.' + currentPlayer + '-rack').appendChild(piece)
+  })
+  Array.from(document.body.querySelectorAll('.draft')).forEach(piece => piece.classList.remove('draft'))
 }
 
 function submit () {
+  // validate submission
+  // if submission is valid, calculate score, submit score, refill rack, change player
+  draft = []
+  reset()
   setRack(currentPlayer)
+  changePlayer()
+}
+
+function pass () {
+  reset()
+  changePlayer()
+}
+
+function changePlayer () {
+  drake.containers.destroy
   player = !player
+  currentPlayer = player ? 'player1' : 'player2'
+  document.body.className = currentPlayer
+  drake.containers = [document.querySelector('.' + currentPlayer + '-rack')]
+    .concat(Array.from(document.querySelectorAll('.board .tile')))
 }

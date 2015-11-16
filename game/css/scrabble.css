@@ -118,8 +118,12 @@ body {
   justify-content: center;
   z-index: 1;
 }
-.submit {
+.reset, .submit, .pass {
   width: 100px;
   height: 30px;
   margin: 0 auto;
+}
+/* hide opponent's tiles */
+body.player1 .player2-rack .letter-piece, body.player2 .player1-rack .letter-piece {
+  visibility: collapse;
 }
