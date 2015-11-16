@@ -9,6 +9,9 @@ var player = false
 var currentPlayer
 var draft = []
 var drake = dragula({
+  moves : function (el) {
+    return Array.from(el.classList).indexOf('set') === -1
+  },
   accepts: function (el, target, source, sibling) {
     return target.children.length === 0
   }}).on('drop', (el) => {
@@ -59,6 +62,9 @@ function reset () {
 function submit () {
   // validate submission
   // if submission is valid, calculate score, submit score, refill rack, change player
+  draft.forEach(piece => {
+    piece.classList.add('set')
+  })
   draft = []
   reset()
   setRack(currentPlayer)
