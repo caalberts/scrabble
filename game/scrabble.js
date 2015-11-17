@@ -71,20 +71,29 @@ function reset () {
 function submit () {
   // validate submission
   if (draft.length > 0) {
-    if (validate.isConnected(draft)) {
-      console.log('All tiles are connected')
-      // if submission is valid, calculate score, submit score, refill rack, change player
+    if (
+      (document.body.querySelector('.set') || validate.isFirstMoveValid(draft)) && // validate first move
+      (validate.isConnected(draft)) // validate if all tiles are connected in a row or column
+      // validate if word connects to existing tiles
+      // validate if all words formed are English words
+    ) {
+      // calculate score
+      // submit score
 
       // set tiles in the board so they can't be moved anymore
       draft.forEach(piece => {
         piece.classList.add('set')
       })
       draft = []
+      // refill rack and change player
       setRack(currentPlayer)
       changePlayer()
     } else {
       // reject invalid submission
-      console.log('All tiles must be connected and form a word')
+      console.log('Please enter a valid move:')
+      console.log('1. Start on the center tile')
+      console.log('2. All letters must be connected')
+      console.log('3. Word must be in English')
     }
   } else {
     // reject empty submission

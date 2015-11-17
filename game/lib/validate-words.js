@@ -1,3 +1,4 @@
+import includes from 'lodash.includes'
 // function to check if all submitted tiles are connected in a row or a column
 export function isConnected (word) {
   // check if it's in a row or column
@@ -13,4 +14,8 @@ export function isConnected (word) {
     return word.map(letter => letter.parentElement.getAttribute('row').charCodeAt()).sort()
       .reduce((a, b) => { return ((b - a) === 1) ? b : false })
   }
+}
+
+export function isFirstMoveValid (word) {
+  return word.map(letter => letter.parentElement).some(parent => includes(Array.from(parent.classList), 'start-tile'))
 }
