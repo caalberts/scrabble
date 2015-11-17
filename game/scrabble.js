@@ -85,10 +85,10 @@ function submit () {
       changePlayer()
     } else {
       // reject invalid submission
-      console.log('Please enter a valid move:')
-      console.log('1. Start on the center tile')
-      console.log('2. All letters must be connected')
-      console.log('3. Word must be in English')
+      // console.log('Please enter a valid move:')
+      // console.log('1. Start on the center tile')
+      // console.log('2. All letters must be connected')
+      // console.log('3. Word must be in English')
     }
   } else {
     // reject empty submission

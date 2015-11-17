@@ -1,63 +1,145 @@
+import difference from 'lodash.difference'
 import includes from 'lodash.includes'
-// function to check if all submitted tiles are connected in a row or a column
-export default function validate (word) {
+import isEmpty from 'lodash.isempty'
+import first from 'lodash.first'
+import last from 'lodash.last'
+import range from 'lodash.range'
+import sortBy from 'lodash.sortby'
+
+export default function validate (draft) {
   var direction
-  // check if it's in a row or column
-  if (word.map(letter => letter.parentElement.getAttribute('row')).reduce((a, b) => { return (a === b) ? a : false })) {
+  var word
+  // determine if the word is a single-letter word, in a row or in a column
+  // sort out the order of letters from draft into word
+  if (draft.length === 1) {
+    direction = 'single'
+    word = draft
+  } else if (draft.map(letter => letter.parentElement.getAttribute('row'))
+        .reduce((a, b) => { return (a === b) ? a : false })) {
     direction = 'row'
-  } else if (word.map(letter => letter.parentElement.getAttribute('col')).reduce((a, b) => { return (a === b) ? a : false })) {
+    word = sortBy(draft, letter => letter.parentElement.getAttribute('col'))
+  } else if (draft.map(letter => letter.parentElement.getAttribute('col'))
+        .reduce((a, b) => { return (a === b) ? a : false })) {
     direction = 'col'
+    word = sortBy(draft, letter => letter.parentElement.getAttribute('row').charCodeAt())
   } else {
+    // letters are not arranged in the same row or column
     return false
   }
 
-  return (
-    (document.body.querySelector('.set') || isFirstMoveValid(word)) && // validate first move
-    isConnected(word, direction) // && // validate if all tiles are connected in a row or column
-    // isConnectedToExistingWords(word, direction) // validate if word connects to existing tiles
-  )
-    // validate if all words formed are English words
+  if (completeWord(word, direction)) {
+    // connected to neighbour or valid first move
+    return isConnectedToExistingLetters(word, direction) || isValidFirstMove(word)
+  } else {
+    // contains exiting letter
+    return containsExistingLetter(word, direction)
+  }
 }
 
-function isConnected (word, direction) {
+function completeWord (word, direction) {
+  switch (direction) {
+    // single-letter word doesn't need to be checked
+    case 'single':
+      return true
+    case 'row':
+      return checkGaps(word.map(letter => parseInt(letter.parentElement.getAttribute('col'), 10)))
+    case 'col':
+      return checkGaps(word.map(letter => letter.parentElement.getAttribute('row').charCodeAt()))
+  }
+}
+
+function checkGaps (list, fix, type) {
+  var test = range(first(list), last(list) + 1)
+  var gaps = difference(test, list)
+  if (isEmpty(gaps)) {
+    return true
+  } else {
+    return gaps.every(gap => {
+      switch (type) {
+        case 'row':
+          return checkExistingLetter(String.fromCharCode(gap), fix)
+        case 'col':
+          return checkExistingLetter(fix, gap)
+      }
+    })
+  }
+}
+
+function isValidFirstMove (word) {
+  // check if word is on starting tile
+  if (word.map(letter => letter.parentElement).some(parent => includes(Array.from(parent.classList), 'start-tile'))) {
+    return true
+  } else {
+    return false
+  }
+}
+
+function containsExistingLetter (word, direction) {
   switch (direction) {
     case 'row':
-      return word.map(letter => letter.parentElement.getAttribute('col')).sort()
-        .reduce((a, b) => { return ((b - a) === 1) ? b : false })
+      return checkGaps(word.map(letter => parseInt(letter.parentElement.getAttribute('col'), 10)),
+                       first(word).parentElement.getAttribute('row'),
+                       'col')
     case 'col':
-      return word.map(letter => letter.parentElement.getAttribute('row').charCodeAt()).sort()
-        .reduce((a, b) => { return ((b - a) === 1) ? b : false })
-    default:
-      return false
+      return checkGaps(word.map(letter => letter.parentElement.getAttribute('row').charCodeAt()),
+                       parseInt(first(word).parentElement.getAttribute('col'), 10),
+                       'row')
   }
-
-  // if (row) {
-  //   // if tiles are in a row, check if columns are adjacent
-  //   return word.map(letter => letter.parentElement.getAttribute('col')).sort()
-  //     .reduce((a, b) => { return ((b - a) === 1) ? b : false })
-  // } else if (col) {
-  //   // if tiles are in a column, check if rows are adjacent
-  //   return word.map(letter => letter.parentElement.getAttribute('row').charCodeAt()).sort()
-  //     .reduce((a, b) => { return ((b - a) === 1) ? b : false })
-  // }
 }
 
-function isFirstMoveValid (word) {
-  return word.map(letter => letter.parentElement).some(parent => includes(Array.from(parent.classList), 'start-tile'))
-}
-
-function isConnectedToExistingWords (word, direction) {
+function isConnectedToExistingLetters (word, direction) {
   var parents = word.map(letter => letter.parentElement)
-  console.log(parents)
   // some parent must be adjacent to existing letter
-  // parents.some(parent => [checkUp, checkLeft, checkRight, checkDown])
-  // if row
-  // parent-1 -- checkUp, checkDown, checkLeft
-  // parent-n -- checkUp, checkDown
-  // parent-last -- checkUp, checkDown, checkLeft
+  switch (direction) {
+    case 'single':
+      return (
+        checkNeighbour(first(parents), 'up') ||
+        checkNeighbour(first(parents), 'down') ||
+        checkNeighbour(first(parents), 'left') ||
+        checkNeighbour(first(parents), 'right')
+      )
+    case 'row':
+      return (
+        parents.some(parent => {
+          return checkNeighbour(parent, 'up') || checkNeighbour(parent, 'down')
+        }) || checkNeighbour(first(parents), 'left') || checkNeighbour(last(parents), 'right')
+      )
+    case 'col':
+      return (
+        parents.some(parent => {
+          return checkNeighbour(parent, 'left') || checkNeighbour(parent, 'right')
+        }) || checkNeighbour(first(parents), 'up') || checkNeighbour(last(parents), 'down')
+      )
+  }
+}
 
-  // if col
-  // parent-1 -- checkLeft, checkRight, checkUp
-  // parent-n -- checkLeft, checkRight
-  // parent-last -- checkLeft, checkRight, checkDown
+function checkNeighbour (el, direction) {
+  var row = el.getAttribute('row').charCodeAt()
+  var col = parseInt(el.getAttribute('col'), 10)
+  var targetRow
+  var targetCol
+  switch (direction) {
+    case 'up':
+      targetRow = String.fromCharCode(row - 1)
+      targetCol = col
+      break
+    case 'down':
+      targetRow = String.fromCharCode(row + 1)
+      targetCol = col
+      break
+    case 'left':
+      targetRow = String.fromCharCode(row)
+      targetCol = col - 1
+      break
+    case 'right':
+      targetRow = String.fromCharCode(row)
+      targetCol = col + 1
+      break
+  }
+  return checkExistingLetter(targetRow, targetCol)
+}
+
+// check if target element contains an existing letter
+function checkExistingLetter (targetRow, targetCol) {
+  return document.body.querySelector('#' + targetRow + targetCol).querySelector('.set')
 }
