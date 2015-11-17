@@ -9,7 +9,7 @@ var player = false
 var currentPlayer
 var draft = []
 var drake = dragula({
-  moves : function (el) {
+  moves: function (el) {
     return Array.from(el.classList).indexOf('set') === -1
   },
   accepts: function (el, target, source, sibling) {
