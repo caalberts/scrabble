@@ -1,6 +1,6 @@
 import drawScrabbleBoard from './lib/scrabble-board.js'
 import letters from './lib/scrabble-letters.js'
-import * as validate from './lib/validate-words.js'
+import validate from './lib/validate-words.js'
 import sample from 'lodash.sample'
 import includes from 'lodash.includes'
 import dragula from 'dragula'
@@ -69,14 +69,9 @@ function reset () {
 }
 
 function submit () {
-  // validate submission
   if (draft.length > 0) {
-    if (
-      (document.body.querySelector('.set') || validate.isFirstMoveValid(draft)) && // validate first move
-      (validate.isConnected(draft)) // validate if all tiles are connected in a row or column
-      // validate if word connects to existing tiles
-      // validate if all words formed are English words
-    ) {
+    // validate submission
+    if (validate(draft)) {
       // calculate score
       // submit score
 
