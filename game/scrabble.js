@@ -37,8 +37,9 @@ function setRack (player) {
   if (currentTiles.length < 7) {
     for (var i = currentTiles.length; i < 7; i++) {
       var piece = document.createElement('div')
-      piece.textContent = dealTile().letter.toUpperCase()
-      piece.className = 'letter-piece'
+      var draw = dealTile()
+      piece.textContent = draw.letter.toUpperCase()
+      piece.className = 'letter-piece score-' + draw.score
       rack.appendChild(piece)
     }
   }
