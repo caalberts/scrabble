@@ -11,6 +11,8 @@ export default function drawScrabbleBoard () {
       var tile = document.createElement('div')
       tile.className = 'tile ' + 'row-' + row + ' ' + 'col-' + col + ' board-tile'
       tile.id = row + col
+      tile.setAttribute('row', row)
+      tile.setAttribute('col', col)
       line.appendChild(tile).classList.add(row + col)
     })
     board.appendChild(line)
