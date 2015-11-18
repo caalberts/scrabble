@@ -1,41 +1,46 @@
 // Create an array of 100 tiles
 // Each tile is a JS object with properties 'letter' and 'score'
-var letters = []
-createLetters('a', 9, 1)
-createLetters('b', 2, 3)
-createLetters('c', 2, 3)
-createLetters('d', 4, 2)
-createLetters('e', 12, 1)
-createLetters('f', 2, 4)
-createLetters('g', 3, 2)
-createLetters('h', 2, 4)
-createLetters('i', 9, 1)
-createLetters('j', 1, 8)
-createLetters('k', 1, 5)
-createLetters('l', 4, 1)
-createLetters('m', 2, 3)
-createLetters('n', 6, 1)
-createLetters('o', 8, 1)
-createLetters('p', 2, 3)
-createLetters('q', 1, 10)
-createLetters('r', 6, 1)
-createLetters('s', 4, 1)
-createLetters('t', 6, 1)
-createLetters('u', 4, 1)
-createLetters('v', 2, 4)
-createLetters('w', 2, 4)
-createLetters('x', 1, 8)
-createLetters('y', 2, 4)
-createLetters('z', 1, 10)
+var letters = [
+  ['a', 9, 1],
+  ['b', 2, 3],
+  ['c', 2, 3],
+  ['d', 4, 2],
+  ['e', 12, 1],
+  ['f', 2, 4],
+  ['g', 3, 2],
+  ['h', 2, 4],
+  ['i', 9, 1],
+  ['j', 1, 8],
+  ['k', 1, 5],
+  ['l', 4, 1],
+  ['m', 2, 3],
+  ['n', 6, 1],
+  ['o', 8, 1],
+  ['p', 2, 3],
+  ['q', 1, 10],
+  ['r', 6, 1],
+  ['s', 4, 1],
+  ['t', 6, 1],
+  ['u', 4, 1],
+  ['v', 2, 4],
+  ['w', 2, 4],
+  ['x', 1, 8],
+  ['y', 2, 4],
+  ['z', 1, 10]
+]
+  .map(letter => createLetters(...letter))
+  .reduce((all, each) => all.concat(each), [])
 
 function createLetters (letter, count, score) {
   var tile = {
     'letter': letter,
     'score': score
   }
+  var available = []
   for (var i = 0; i < count; i++) {
-    letters.push(tile)
+    available.push(tile)
   }
+  return available
 }
 
 export default letters
