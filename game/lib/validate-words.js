@@ -69,6 +69,6 @@ export function isConnectedToExistingLetters (word) {
 }
 
 // check if target element contains a letter
-function checkForLetter (targetRow, targetCol, el = '.letter-piece') {
+export function checkForLetter (targetRow, targetCol, el = '.letter-piece') {
   return document.body.querySelector('#' + targetRow + targetCol).querySelector(el)
 }

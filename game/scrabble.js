@@ -2,6 +2,7 @@ import drawScrabbleBoard from './lib/scrabble-board.js'
 import letters from './lib/scrabble-letters.js'
 import * as validate from './lib/validate-words.js'
 import * as score from './lib/score.js'
+import * as search from './lib/search-words.js'
 import sample from 'lodash.sample'
 import includes from 'lodash.includes'
 import dragula from 'dragula'
@@ -75,28 +76,33 @@ function submit () {
     // validate submission
     // determine if letters are placed in a line
     var line = validate.findDirection(draft)
-    // rearrange 'draft' based on tile position --> turn into 'word'
+    // rearrange 'draft' based on tile position --> save into 'word'
     if (line) {
       var word = validate.rearrange(draft, line)
 
       // check if word is adjacent to existing tiles or a valid first move
       if (validate.isValidFirstMove(word) || validate.isConnectedToExistingLetters(word)) {
-        // check for whole word or has gaps
-        console.log(draft.map(letter => letter.textContent))
-        console.log(word.map(letter => letter.textContent))
-        console.log(word.map(letter => letter.textContent))
-
         word = validate.findGaps(word, line)
         if (word) {
           // word is valid
-          console.log('it\'s a complete word')
 
+          var submissions = []
+          // find word along the line of the draft
+          submissions.push(search.findWords(draft[0], line))
+
+          // find words across the line of the draft
+          draft.forEach(letter => {
+            // may need to check for dupes
+            if (isNaN(line)) {
+              submissions.push(search.findWords(letter, letter.parentElement.getAttribute('col')))
+            } else {
+              submissions.push(search.findWords(letter, letter.parentElement.getAttribute('row')))
+            }
+          })
+          submissions = submissions.filter(submission => submission.length > 1)
+          console.log('Words detected:')
+          submissions.forEach(submission => console.log(submission.map(letter => letter.textContent).join('') + ': ' + score.calculateWordScore(submission)))
           // calculate score for word
-          console.log('score: ' + score.calculateWordScore(word))
-
-          // find other extended words ### TO-DO
-
-          // '.set' class will indicate no bonus should be applied
 
           // Complete turn, save score and change turn
 
