@@ -13,6 +13,8 @@ export default function drawScrabbleBoard () {
       tile.id = row + col
       tile.setAttribute('row', row)
       tile.setAttribute('col', col)
+      tile.setAttribute('letterX', 1)
+      tile.setAttribute('wordX', 1)
       line.appendChild(tile).classList.add(row + col)
     })
     board.appendChild(line)
@@ -43,9 +45,26 @@ export default function drawScrabbleBoard () {
   var tripleWordTiles = ['a1', 'a8', 'a15',
                          'h1', 'h15',
                          'o1', 'o8', 'o15']
-  doubleLetterTiles.forEach(tile => document.querySelector('.' + tile).classList.add('double-letter'))
-  tripleLetterTiles.forEach(tile => document.querySelector('.' + tile).classList.add('triple-letter'))
-  doubleWordTiles.forEach(tile => document.querySelector('.' + tile).classList.add('double-word'))
-  tripleWordTiles.forEach(tile => document.querySelector('.' + tile).classList.add('triple-word'))
+
+  doubleLetterTiles.forEach(tile => {
+    var item = document.querySelector('.' + tile)
+    item.classList.add('double-letter')
+    item.setAttribute('letterX', 2)
+  })
+  tripleLetterTiles.forEach(tile => {
+    var item = document.querySelector('.' + tile)
+    item.classList.add('triple-letter')
+    item.setAttribute('letterX', 3)
+  })
+  doubleWordTiles.forEach(tile => {
+    var item = document.querySelector('.' + tile)
+    item.classList.add('double-word')
+    item.setAttribute('wordX', 2)
+  })
+  tripleWordTiles.forEach(tile => {
+    var item = document.querySelector('.' + tile)
+    item.classList.add('triple-word')
+    item.setAttribute('wordX', 3)
+  })
   document.querySelector('#h8').classList.add('start-tile')
 }
