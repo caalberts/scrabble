@@ -1,4 +1,4 @@
-import level from 'level'
+var level = require('level-browserify')
 
 var db = level('../db')
 
