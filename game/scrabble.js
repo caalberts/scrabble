@@ -1,6 +1,6 @@
 import drawScrabbleBoard from './lib/scrabble-board.js'
 import letters from './lib/scrabble-letters.js'
-import validate from './lib/validate-words.js'
+import * as validate from './lib/validate-words.js'
 import sample from 'lodash.sample'
 import includes from 'lodash.includes'
 import dragula from 'dragula'
@@ -47,6 +47,7 @@ function setRack (player) {
       var draw = dealTile()
       piece.textContent = draw.letter.toUpperCase()
       piece.className = 'letter-piece score-' + draw.score
+      piece.setAttribute('score', draw.score)
       rack.appendChild(piece)
     }
   }
@@ -71,6 +72,36 @@ function reset () {
 function submit () {
   if (draft.length > 0) {
     // validate submission
+    const word
+    // determine direction if it's row or column
+    const direction = validate.findDirection(draft)
+    // rearrange 'draft' based on tile position --> turn into 'word'
+    if (direction) {
+      word = validate.rearrange(draft)
+      // check for whole word or has gaps
+      gaps = findGaps(word, direction)
+      if (gaps === false) {
+        // if whole word --> calculate word score
+
+      } else {
+        // if not whole word
+        // fill gap with existing letters
+        gaps = fillWithExistingLetters(word, direction)
+        // include existing letters into word --> calculate word score
+
+      }
+    }
+
+
+
+
+
+          // '.set' class will indicate no bonus should be applied
+      // if cannot be filled, reject submission
+
+    // find other extended words ### TO-DO
+
+
     if (validate(draft)) {
       // calculate score
       // submit score
