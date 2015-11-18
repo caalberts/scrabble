@@ -3,11 +3,11 @@ import letters from './lib/scrabble-letters.js'
 import * as validate from './lib/validate-words.js'
 import * as score from './lib/score.js'
 import * as search from './lib/search-words.js'
+import * as dictionary from './lib/dictionary.js'
 import sample from 'lodash.sample'
 import includes from 'lodash.includes'
 import dragula from 'dragula'
 
-// create inventory of tiles
 var inventory = letters
 var player = false
 var currentPlayer
@@ -100,6 +100,7 @@ function submit () {
             }
           })
           submissions = submissions.filter(submission => submission.length > 1)
+          dictionary.checkDictionary(submissions)
           console.log('Words detected:')
           submissions.forEach(submission => console.log(submission.map(letter => letter.textContent).join('') + ': ' + score.calculateWordScore(submission)))
           // calculate score for word
