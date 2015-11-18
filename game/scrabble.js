@@ -98,8 +98,6 @@ function submit () {
 
           // '.set' class will indicate no bonus should be applied
 
-
-
           // Complete turn, save score and change turn
 
           // set tiles in the board so they can't be moved anymore

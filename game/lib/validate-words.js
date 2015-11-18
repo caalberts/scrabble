@@ -54,25 +54,21 @@ export function isValidFirstMove (word) {
   }
 }
 
-export function isConnectedToExistingLetters (word, line) {
+export function isConnectedToExistingLetters (word) {
   var parents = word.map(letter => letter.parentElement)
   // some parent needs to be adjacent to an existing letter
-  parents.some(parent = {
-    parentRow = parent.getAttribute('row').charCodeAt()
-    parentCol = parseInt(parent.getAttribute('col'), 10)
-    return [[parentRow + 1, parentCol],
-            [parentRow - 1, parentCol],
-            [parentRow, parentCol + 1],
-            [parentRow, parentCol - 1]]
-              .some(check => checkForExistingLetter(...check))
+  return parents.some(parent => {
+    var parentRow = parent.getAttribute('row').charCodeAt()
+    var parentCol = parseInt(parent.getAttribute('col'), 10)
+    return [[String.fromCharCode(parentRow + 1), parentCol],
+            [String.fromCharCode(parentRow - 1), parentCol],
+            [String.fromCharCode(parentRow), parentCol + 1],
+            [String.fromCharCode(parentRow), parentCol - 1]]
+              .some(check => checkForLetter(...check, '.set'))
   })
 }
 
-// check if target element contains an existing letter
-function checkForExistingLetter (targetRow, targetCol) {
-  return document.body.querySelector('#' + targetRow + targetCol).querySelector('.set')
-}
 // check if target element contains a letter
-function checkForLetter (targetRow, targetCol) {
-  return document.body.querySelector('#' + targetRow + targetCol).firstChild
+function checkForLetter (targetRow, targetCol, el = '.letter-piece') {
+  return document.body.querySelector('#' + targetRow + targetCol).querySelector(el)
 }
