@@ -1,6 +1,7 @@
 import drawScrabbleBoard from './lib/scrabble-board.js'
 import letters from './lib/scrabble-letters.js'
 import * as validate from './lib/validate-words.js'
+import * as score from './lib/score.js'
 import sample from 'lodash.sample'
 import includes from 'lodash.includes'
 import dragula from 'dragula'
@@ -72,54 +73,55 @@ function reset () {
 function submit () {
   if (draft.length > 0) {
     // validate submission
-    const word
-    // determine direction if it's row or column
-    const direction = validate.findDirection(draft)
+    // determine if letters are placed in a line
+    var line = validate.findDirection(draft)
     // rearrange 'draft' based on tile position --> turn into 'word'
-    if (direction) {
-      word = validate.rearrange(draft)
-      // check for whole word or has gaps
-      gaps = findGaps(word, direction)
-      if (gaps === false) {
-        // if whole word --> calculate word score
+    if (line) {
+      var word = validate.rearrange(draft, line)
 
-      } else {
-        // if not whole word
-        // fill gap with existing letters
-        gaps = fillWithExistingLetters(word, direction)
-        // include existing letters into word --> calculate word score
+      // check if word is adjacent to existing tiles or a valid first move
+      if (validate.isValidFirstMove(word) || validate.isConnectedToExistingLetters(word)) {
+        // check for whole word or has gaps
+        console.log(draft.map(letter => letter.textContent))
+        console.log(word.map(letter => letter.textContent))
+        console.log(word.map(letter => letter.textContent))
 
-      }
-    }
+        word = validate.findGaps(word, line)
+        if (word) {
+          // word is valid
+          console.log('it\'s a complete word')
 
+          // calculate score for word
+          console.log('score: ' + score.calculateWordScore(word))
 
-
-
+          // find other extended words ### TO-DO
 
           // '.set' class will indicate no bonus should be applied
-      // if cannot be filled, reject submission
-
-    // find other extended words ### TO-DO
 
 
-    if (validate(draft)) {
-      // calculate score
-      // submit score
 
-      // set tiles in the board so they can't be moved anymore
-      draft.forEach(piece => {
-        piece.classList.add('set')
-      })
-      draft = []
-      // refill rack and change player
-      setRack(currentPlayer)
-      changePlayer()
+          // Complete turn, save score and change turn
+
+          // set tiles in the board so they can't be moved anymore
+          draft.forEach(piece => {
+            piece.classList.add('set')
+          })
+          draft = []
+          // refill rack and change player
+          setRack(currentPlayer)
+          changePlayer()
+        } else {
+          console.log('Reject incomplete word')
+        }
+      } else {
+        console.log('Reject invalid first word or isolated words')
+      }
     } else {
       // reject invalid submission
-      // console.log('Please enter a valid move:')
-      // console.log('1. Start on the center tile')
-      // console.log('2. All letters must be connected')
-      // console.log('3. Word must be in English')
+      console.log('Please enter a valid move:')
+      console.log('1. Start on the center tile')
+      console.log('2. All letters must be connected')
+      console.log('3. Word must be in English')
     }
   } else {
     // reject empty submission
