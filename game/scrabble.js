@@ -12,6 +12,7 @@ import dragula from 'dragula'
 var inventory = letters
 var player = false
 var currentPlayer
+var playerScores = [0, 0]
 var draft = []
 var drake = dragula({
   moves: function (el) {
@@ -38,6 +39,20 @@ players.forEach(player => setRack(player))
 document.querySelector('.reset').addEventListener('click', reset)
 document.querySelector('.submit').addEventListener('click', submit)
 document.querySelector('.pass').addEventListener('click', changePlayer)
+document.querySelector('.next').addEventListener('click', dismissScore)
+document.querySelector('.close').addEventListener('click', dismissError)
+
+function dismissScore () {
+  document.querySelector('.overlay-score').classList.toggle('hidden')
+  document.querySelector('.overlay').classList.toggle('hidden')
+  changePlayer()
+}
+
+function dismissError () {
+  document.querySelector('.overlay-error').classList.toggle('hidden')
+  document.querySelector('.overlay').classList.toggle('hidden')
+  reset()
+}
 
 changePlayer()
 
@@ -73,6 +88,7 @@ function reset () {
 }
 
 function submit () {
+  var errors = []
   if (draft.length > 0) {
     // validate submission
     // determine if letters are placed in a line
@@ -100,17 +116,48 @@ function submit () {
               submissions.push(search.findWords(letter, letter.parentElement.getAttribute('row')))
             }
           })
+
+          // remove single letter words
           submissions = submissions.filter(submission => submission.length > 1)
 
+          // check words against dictionary
           if (dictionary.checkDictionary(library, submissions)) {
             console.log('words are in dictionary')
           }
 
+          // calculate scores
           console.log('Words detected:')
-          submissions.forEach(submission => console.log(submission.map(letter => letter.textContent).join('') + ': ' + score.calculateWordScore(submission)))
-          // calculate score for word
+          var results = submissions.map(submission => {
+            var temp = {}
+            temp.word = submission.map(letter => letter.textContent).join('')
+            temp.score = score.calculateWordScore(submission)
+            console.log(temp)
+            return temp
+          })
+          var totalScore = results.reduce((total, next) => { return total + next.score }, 0)
 
-          // Complete turn, save score and change turn
+          // prepare scores for overlay
+          var scoreContainer = document.querySelector('.score-container')
+          console.log(scoreContainer)
+          results.forEach(result => {
+            var scoreItem = document.createElement('div')
+            scoreItem.textContent = result.word + ': ' + result.score
+            scoreContainer.appendChild(scoreItem)
+          })
+          var totalScoreContainer = document.createElement('div')
+          totalScoreContainer.textContent = 'Total Score = ' + totalScore
+          scoreContainer.appendChild(totalScoreContainer)
+
+          // update and display scores
+          if (player) {
+            playerScores[0] += totalScore
+            document.querySelector('.player1-score').textContent = playerScores[0]
+          } else {
+            playerScores[1] += totalScore
+            document.querySelector('.player2-score').textContent = playerScores[1]
+          }
+          document.querySelector('.overlay').classList.toggle('hidden')
+          document.querySelector('.overlay-score').classList.toggle('hidden')
 
           // set tiles in the board so they can't be moved anymore
           draft.forEach(piece => {
@@ -121,22 +168,25 @@ function submit () {
           setRack(currentPlayer)
           changePlayer()
         } else {
-          console.log('Reject incomplete word')
+          // reject incomplete word
+          errors.push('Incomplete word')
         }
       } else {
-        console.log('Reject invalid first word or isolated words')
+        // reject invalid locations
+        errors.push('Word must be on starting tile or connected to existing words')
       }
     } else {
       // reject invalid submission
-      console.log('Please enter a valid move:')
-      console.log('1. Start on the center tile')
-      console.log('2. All letters must be connected')
-      console.log('3. Word must be in English')
+      errors.push('other errors')
     }
   } else {
     // reject empty submission
-    console.log('You need to submit a word')
-    console.log('If you can\'t think of a word, pass')
+    errors.push('You need to submit a word or pass')
+  }
+  if (errors.length > 0) {
+    document.body.querySelector('.error-message').textContent = errors
+    document.body.querySelector('.overlay').classList.toggle('hidden')
+    document.body.querySelector('.overlay-error').classList.toggle('hidden')
   }
 }
 

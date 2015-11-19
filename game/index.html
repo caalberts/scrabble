@@ -3,54 +3,60 @@
   <head>
     <meta charset="utf-8">
     <title>Scrabble</title>
-    <link rel="stylesheet" href="css/scrabble.css">
-    <link rel="stylesheet" href="css/dragula.css">
-    <!-- <script src="dictionary.js" defer></script> -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/main.css">
     <script src="scrabble.js" defer></script>
-
-    </script>
   </head>
   <body>
     <div class="container">
-      <aside class="player player1">
-        <div class="player1-turn player-turn">
-          <h2>Your turn</h2>
-        </div>
-        <div class="player-header player1-header">
-          <div class="player-name player1-name">
-            <h2>Player 1</h2>
+      <aside class="players">
+        <div class="player-container player1-container">
+          <div class="player-header player1-header">
+            <div class="player-name player1-name">
+              <h2>Player 1</h2>
+            </div>
+            <div class="player-score-board player1-score-board">
+              <h2>Score: <span class="player1-score">0</span></h2>
+            </div>
           </div>
-          <div class="player-score-board player1-score-board">
-            <h2>Score: <span class="player1-score"</h2>
-          </div>
-        </div>
-        <div class="rack player1-rack">
+          <div class="rack player1-rack">
 
+          </div>
+        </div>
+        <div class="actions">
+          <input type="button" name="reset" value="Reset" class="button reset">
+          <input type="button" name="pass" value="Pass" class="button pass">
+          <input type="button" name="submit" value="Submit" class="button submit">
+        </div>
+        <div class="player-container player2-container">
+          <div class="player-header player2-header">
+            <div class="player-name player2-name">
+              <h2>Player 2</h2>
+            </div>
+            <div class="player-score-board player2-score-board">
+              <h2>Score: <span class="player2-score">0</span></h2>
+            </div>
+          </div>
+          <div class="rack player2-rack">
+
+          </div>
         </div>
       </aside>
-      <main class="board">
-      </main>
-      <aside class="player player2">
-        <div class="player2-turn player-turn">
-          <h2>Your turn</h2>
-        </div>
-        <div class="player-header player2-header">
-          <div class="player-name player2-name">
-            <h2>Player 2</h2>
-          </div>
-          <div class="player-score-board player2-score-board">
-            <h2>Score: <span class="player2-score"></h2>
-          </div>
-        </div>
-        <div class="rack player2-rack">
-
-        </div>
-      </aside>
+      <main class="board"></main>
     </div>
-    <div class="actions">
-      <input type="button" name="reset" value="Reset" class="reset">
-      <input type="button" name="submit" value="Submit" class="submit">
-      <input type="button" name="pass" value="Pass" class="pass">
+    <div class="overlay hidden">
+      <div class="overlay-message overlay-score hidden">
+        <div class="score-container">
+
+        </div>
+        <input type="button" name="Next" value="Next" class="button next">
+      </div>
+      <div class="overlay-message overlay-error hidden">
+        <div class="error-message-container">
+          <p class="error-message"></p>
+        </div>
+        <input type="button" name="Close" value="Close" class="button close">
+      </div>
     </div>
   </body>
 </html>
