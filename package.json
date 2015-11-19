@@ -1,5 +1,5 @@
 {
-  "name": "project01",
+  "name": "Scrabble",
   "version": "1.0.0",
   "description": "A scrabble game for GA WDI project",
   "main": "index.js",
@@ -8,15 +8,17 @@
     "start-server": "http-server dist",
     "test": "standard && mocha",
     "clean": "rm -rf dist",
-    "build": "npm run clean && mkdir dist && npm run build-html && npm run build-css && npm run build-js",
+    "build": "npm run clean && mkdir dist && mkdir dist/css && mkdir dist/img && npm run build-html && npm run build-css && npm run build-js && npm run build-img",
     "build-html": "cp game/index.html dist/index.html",
-    "build-css": "cp -r game/css/ dist/css",
+    "build-css": "stylus game/css/main.styl --include-css --out dist/css",
     "build-js": "browserify game/scrabble.js --outfile dist/scrabble.js --transform babelify",
+    "build-img": "cp -r game/img/ dist/img/",
     "watch": "npm run build && npm run watch-test & npm run watch-js & npm run watch-css & npm run watch-html & npm run start-server",
     "watch-html": "watch-spawn -p 'game/index.html' npm run build-html",
-    "watch-css": "watch-spawn -p 'game/css/scrabble.css' npm run build-css",
+    "watch-css": "npm run build-css -- --watch",
     "watch-js": "watchify game/scrabble.js --outfile dist/scrabble.js --transform babelify --verbose",
-    "watch-test": "mocha --watch"
+    "watch-test": "mocha --watch",
+    "watch-img": "watch-spawn -p 'game/img' npm run build-img"
   },
   "repository": {
     "type": "git",
@@ -49,7 +51,8 @@
     "lodash.range": "^3.0.1",
     "lodash.sample": "^3.1.0",
     "lodash.sortby": "^3.1.5",
-    "standard": "^5.3.1"
+    "standard": "^5.3.1",
+    "stylus": "^0.52.4"
   },
   "devDependencies": {
     "babel-core": "^6.1.21",
