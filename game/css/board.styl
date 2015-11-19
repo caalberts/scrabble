@@ -1,0 +1,61 @@
+.board
+  background paleturquoise
+  border 5px solid black
+  align-self center
+  display flex
+  flex-direction column
+
+.row
+  display flex
+  flex-direction row
+  justify-content center
+
+.tile
+  height 40px
+  width 40px
+  border 1px solid black
+  display flex
+  justify-content center
+  align-items center
+  position relative
+
+.tile:before
+  color white
+  position absolute
+  width 40px
+  height 40px
+  top 0
+  left 0
+  display flex
+  justify-content center
+  align-items center
+  pointer-events none
+
+.start-tile
+  background white
+  background-image url('../img/star-xxl.png')
+  background-size 40px 40px
+
+.double-letter
+  background deepskyblue
+
+.double-letter:before
+  content '2L'
+
+.triple-letter
+  background blue
+
+.triple-letter:before
+  content '3L'
+
+.double-word
+  background indianred
+
+.double-word:before
+  content '2W'
+
+.triple-word
+  background darkred
+
+.triple-word:before
+  content '3W'

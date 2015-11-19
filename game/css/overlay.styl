@@ -1,0 +1,31 @@
+.overlay
+  display flex
+  flex-direction column
+  justify-content center
+  align-items center
+  position absolute
+  z-index 1
+  top 0
+  height 100vh
+  width 100vw
+
+.overlay-message
+  padding 10px
+  background white
+  border 3px solid black
+  border-radius 5px
+  display flex
+  flex-direction column
+  justify-content space-between
+  text-align center
+  align-items center
+  align-content center
+
+.overlay-score, .overlay-error
+  background cyan
+
+.overlay.hidden, .overlay-score.hidden, .overlay-error.hidden
+  display none
+
+.button.next, .button.close
+  flex-grow 0

@@ -1,0 +1,87 @@
+body
+  background dodgerblue
+  font-family 'Roboto', sans-serif
+  display flex
+  flex-direction column
+  justify-content center
+
+.container
+  height 100vh
+  width 100vw
+  display flex
+  flex-direction row
+  align-content center
+  justify-content center
+
+.players
+  display flex
+  flex-direction column
+  justify-content center
+
+.player-container
+  background white
+  padding 10px
+  border 3px solid black
+  border-radius 5px
+  // flex-grow 1
+  display flex
+  flex-direction column
+  justify-content center
+  margin 10px
+
+.player-header
+  background turquoise
+  border 3px solid black
+  border-top-left-radius 5px
+  border-top-right-radius 5px
+  padding 0 10px
+  display flex
+  justify-content space-between
+
+.player-name
+  align-self flex-start
+  text-align center
+
+.rack
+  width 300px
+  height 50px
+  align-self center
+  background darkturquoise
+  border 3px solid black
+  border-top 0
+  border-bottom-left-radius 5px
+  border-bottom-right-radius 5px
+  display flex
+  flex-direction row
+  align-items center
+  justify-content center
+
+.actions
+  display flex
+  flex-direction row
+  justify-content center
+  padding 0 5px
+
+.button
+  margin 10px 5px 5px
+  border 3px solid black
+  border-radius 5px
+  background lightcyan
+  flex-grow 1
+  font-family 'Roboto', sans-serif
+  font-weight bold
+  font-size 14pt
+  vertical-align center
+
+/* show player's turn */
+body.player1 .player2-container, body.player2 .player1-container
+  opacity 0.2
+
+/* hide opponent's tiles */
+body.player1 .player2-rack .letter-piece, body.player2 .player1-rack .letter-piece
+  visibility collapse
+
+@import 'board.styl'
+@import 'letters.styl'
+@import 'overlay.styl'
+@import 'dragula.css'
