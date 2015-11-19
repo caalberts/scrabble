@@ -1,26 +1,15 @@
-import level from 'level-browserify'
-import Promise from 'bluebird'
+// import level from 'level-browserify'
+// import Promise from 'bluebird'
+import fs from 'fs'
+import includes from 'lodash.includes'
+// var db = Promise.promisifyAll(level('db'))
 
-var db = Promise.promisifyAll(level('db'))
+const sowpods = fs.readFileSync('./sowpods.txt').split('\n')
 
 export function checkDictionary (words) {
-  return Promise.all(words.map(word => {
-    getDictionary(word.map(tile => tile.textContent).join('').toString().toLowerCase())
-  }))
-}
-
-function getDictionary (word) {
-  console.log('searching dictionary for: ' + word)
-  return new Promise((resolve, reject) => {
-    db.getAsync(word, function (error, score) {
-      if (error) {
-        console.log(error)
-        reject(error)
-      } else {
-        resolve(score)
-      }
-    })
-  })
+  return words.map(word => {
+    (word.map(tile => tile.textContent).join(''))
+  }).every(word => includes(sowpods, word))
 }
 
 // async function getDictionary (word) {
