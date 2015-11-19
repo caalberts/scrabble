@@ -1,10 +1,11 @@
-import includes from 'lodash.includes'
+// import includes from 'lodash.includes'
 
-export function checkDictionary (dictionary, words) {
-  return words.map(word => {
-    (word.map(tile => tile.textContent).join(''))
-  }).every(word => includes(dictionary, word))
-}
+var fs = require('fs')
+
+const sowpods = fs.readFileSync(__dirname + '/sowpods.txt', 'utf8').split('\n')
+// const sowpods = stream.split('\n')
+
+module.exports = sowpods
 
 // async function checkDictionary (words) {
 //   return await * words.map(word => getDictionary(word))

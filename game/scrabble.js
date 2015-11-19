@@ -3,7 +3,8 @@ import letters from './lib/scrabble-letters.js'
 import * as validate from './lib/validate-words.js'
 import * as score from './lib/score.js'
 import * as search from './lib/search-words.js'
-import * as dictionary from './lib/dictionary-check.js'
+import * as dictionary from './lib/dictionary.js'
+import * as library from './lib/library-fs.js'
 import sample from 'lodash.sample'
 import includes from 'lodash.includes'
 import dragula from 'dragula'
@@ -100,7 +101,11 @@ function submit () {
             }
           })
           submissions = submissions.filter(submission => submission.length > 1)
-          dictionary.checkDictionary(sowpods, submissions)
+
+          if (dictionary.checkDictionary(library, submissions)) {
+            console.log('words are in dictionary')
+          }
+
           console.log('Words detected:')
           submissions.forEach(submission => console.log(submission.map(letter => letter.textContent).join('') + ': ' + score.calculateWordScore(submission)))
           // calculate score for word
