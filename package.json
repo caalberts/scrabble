@@ -7,7 +7,6 @@
     "start": "npm run build && npm run start-server",
     "start-server": "http-server dist",
     "test": "standard && mocha",
-<<<<<<< HEAD
     "clean": "rm -rf dist && rm game/lib/library-fs.js",
     "build": "npm run clean && mkdir dist && mkdir dist/css && mkdir dist/img && npm run build-html && npm run build-css && npm run build-brfs && npm run build-js && npm run build-img",
     "build-html": "cp game/index.html dist/index.html",
