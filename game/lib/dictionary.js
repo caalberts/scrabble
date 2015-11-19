@@ -1,25 +1,33 @@
-var level = require('level-browserify')
+import level from 'level-browserify'
+import Promise from 'bluebird'
 
-var db = level('../db')
+var db = Promise.promisifyAll(level('db'))
 
 export function checkDictionary (words) {
-  Promise.all(words.map(word => getDictionary(word))
-    .then(scores => {
-      return scores
-    }))
+  return Promise.all(words.map(word => {
+    getDictionary(word.map(tile => tile.textContent).join('').toString().toLowerCase())
+  }))
 }
 
 function getDictionary (word) {
-  db.get(word, function (error, score) {
-    if (error) {
-      if (!error.notFound) {
+  console.log('searching dictionary for: ' + word)
+  return new Promise((resolve, reject) => {
+    db.getAsync(word, function (error, score) {
+      if (error) {
         console.log(error)
+        reject(error)
+      } else {
+        resolve(score)
       }
-    } else {
-      return score
-    }
+    })
   })
 }
+
+// async function getDictionary (word) {
+//   const result = await db.getAsync(word)
+//   console.log(result)
+//   return result
+// }
 
 // async function checkDictionary (words) {
 //   return await * words.map(word => getDictionary(word))
