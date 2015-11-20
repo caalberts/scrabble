@@ -22,15 +22,7 @@ function move (start, line, direction, option, result = []) {
   }
   if (option === 'trace') {
     result.push(start)
-    if (next) {
-      return move(next, line, direction, option, result)
-    } else {
-      console.log('return: ' + result)
-      return result
-    }
-  } else if (next) {
-    return move(next, line, direction, option)
-  } else {
-    return start
+    return next ? move(next, line, direction, option, result) : result
   }
+  return next ? move(next, line, direction) : start
 }

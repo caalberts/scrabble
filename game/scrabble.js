@@ -4,7 +4,7 @@ import * as validate from './lib/validate-words.js'
 import * as score from './lib/score.js'
 import * as search from './lib/search-words.js'
 import * as dictionary from './lib/dictionary.js'
-import * as library from './lib/library-fs.js'
+import library from './lib/library.js'
 import sample from 'lodash.sample'
 import includes from 'lodash.includes'
 import dragula from 'dragula'
@@ -45,7 +45,18 @@ document.querySelector('.close').addEventListener('click', dismissError)
 function dismissScore () {
   document.querySelector('.overlay-score').classList.toggle('hidden')
   document.querySelector('.overlay').classList.toggle('hidden')
+  // set tiles in the board so they can't be moved anymore
+  draft.forEach(piece => {
+    piece.classList.add('set')
+  })
+  draft = []
+  // refill rack and change player
+  setRack(currentPlayer)
   changePlayer()
+  // for (var el of document.querySelectorAll('.score-item'))
+  //   el.remove()
+  Array.from(document.querySelectorAll('.score-item')).forEach(el => el.remove())
+  document.querySelector('.total-score').remove()
 }
 
 function dismissError () {
@@ -83,7 +94,9 @@ function reset () {
   draft.forEach(piece => {
     document.body.querySelector('.' + currentPlayer + '-rack').appendChild(piece)
   })
-  Array.from(document.body.querySelectorAll('.draft')).forEach(piece => piece.classList.remove('draft'))
+  Array.from(document.body.querySelectorAll('.draft')).forEach(el => el.classList.remove('draft'))
+  // for (var el of document.body.querySelectorAll('.draft'))
+  //   el.classList.remove('draft')
   draft = []
 }
 
@@ -91,7 +104,7 @@ function submit () {
   var errors = []
   if (draft.length > 0) {
     // validate submission
-    // determine if letters are placed in a line
+    // determine if letters are placed in a row or column
     var line = validate.findDirection(draft)
     // rearrange 'draft' based on tile position --> save into 'word'
     if (line) {
@@ -122,51 +135,44 @@ function submit () {
 
           // check words against dictionary
           if (dictionary.checkDictionary(library, submissions)) {
-            console.log('words are in dictionary')
-          }
+            // calculate scores
+            var results = submissions.map(submission => {
+              var temp = {
+                'word': submission.map(letter => letter.textContent).join(''),
+                'score': score.calculateWordScore(submission)
+              }
 
-          // calculate scores
-          console.log('Words detected:')
-          var results = submissions.map(submission => {
-            var temp = {}
-            temp.word = submission.map(letter => letter.textContent).join('')
-            temp.score = score.calculateWordScore(submission)
-            console.log(temp)
-            return temp
-          })
-          var totalScore = results.reduce((total, next) => { return total + next.score }, 0)
+              return temp
+            })
+            var totalScore = results.reduce((total, next) => { return total + next.score }, 0)
 
-          // prepare scores for overlay
-          var scoreContainer = document.querySelector('.score-container')
-          console.log(scoreContainer)
-          results.forEach(result => {
-            var scoreItem = document.createElement('div')
-            scoreItem.textContent = result.word + ': ' + result.score
-            scoreContainer.appendChild(scoreItem)
-          })
-          var totalScoreContainer = document.createElement('div')
-          totalScoreContainer.textContent = 'Total Score = ' + totalScore
-          scoreContainer.appendChild(totalScoreContainer)
+            // prepare scores for overlay
+            var scoreContainer = document.querySelector('.score-container')
 
-          // update and display scores
-          if (player) {
-            playerScores[0] += totalScore
-            document.querySelector('.player1-score').textContent = playerScores[0]
+            results.forEach(result => {
+              var scoreItem = document.createElement('div')
+              scoreItem.classList.add('score-item')
+              scoreItem.textContent = result.word + ': ' + result.score
+              scoreContainer.appendChild(scoreItem)
+            })
+            var totalScoreContainer = document.createElement('div')
+            totalScoreContainer.classList.add('total-score')
+            totalScoreContainer.textContent = 'Total Score = ' + totalScore
+            scoreContainer.appendChild(totalScoreContainer)
+
+            // update and display scores
+            if (player) {
+              playerScores[0] += totalScore
+              document.querySelector('.player1-score').textContent = playerScores[0]
+            } else {
+              playerScores[1] += totalScore
+              document.querySelector('.player2-score').textContent = playerScores[1]
+            }
+            document.querySelector('.overlay').classList.toggle('hidden')
+            document.querySelector('.overlay-score').classList.toggle('hidden')
           } else {
-            playerScores[1] += totalScore
-            document.querySelector('.player2-score').textContent = playerScores[1]
+            errors.push('Words are not in the dictionary')
           }
-          document.querySelector('.overlay').classList.toggle('hidden')
-          document.querySelector('.overlay-score').classList.toggle('hidden')
-
-          // set tiles in the board so they can't be moved anymore
-          draft.forEach(piece => {
-            piece.classList.add('set')
-          })
-          draft = []
-          // refill rack and change player
-          setRack(currentPlayer)
-          changePlayer()
         } else {
           // reject incomplete word
           errors.push('Incomplete word')
