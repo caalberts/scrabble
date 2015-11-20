@@ -1,103 +1,210 @@
-// Draw scrabble board using DOM manipulation
-var board = document.querySelector('.board')
-var rows = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
-var cols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+import drawScrabbleBoard from './lib/scrabble-board.js'
+import letters from './lib/scrabble-letters.js'
+import * as validate from './lib/validate-words.js'
+import * as score from './lib/score.js'
+import * as search from './lib/search-words.js'
+import * as dictionary from './lib/dictionary.js'
+import library from './lib/library.js'
+import sample from 'lodash.sample'
+import includes from 'lodash.includes'
+import dragula from 'dragula'
 
-rows.forEach(row => {
-  var line = document.createElement('div')
-  line.className = 'row ' + row + ' row-' + row
-  cols.forEach(col => {
-    var tile = document.createElement('div')
-    tile.className = 'tile ' + 'row-' + row + ' ' + 'col-' + col
-    tile.id = row + col
-    line.appendChild(tile).classList.add(row + col)
+var inventory = letters
+var player = false
+var currentPlayer
+var playerScores = [0, 0]
+var draft = []
+var drake = dragula({
+  moves: function (el) {
+    return !includes(Array.from(el.classList), 'set')
+  },
+  accepts: function (el, target, source, sibling) {
+    return target.children.length === 0 || includes(Array.from(target.classList), 'rack')
+  }}).on('drop', (el) => {
+    // remove letter from existing draft if it's repositioned
+    if (includes(draft, el)) {
+      draft.splice(draft.indexOf(el), 1)
+    }
+    // add letter into draft
+    draft.push(el)
+    el.classList.add('draft')
   })
-  board.appendChild(line)
-})
-// mark special tiles
-//
-document.querySelector('#h8').classList.add('start-tile')
-var doubleLetterTiles = ['a4', 'a12',
-                         'c7', 'c9',
-                         'd1', 'd8', 'd15',
-                         'g3', 'g7', 'g9', 'g13',
-                         'h4', 'h12',
-                         'i3', 'i7', 'i9', 'i13',
-                         'l1', 'l8', 'l15',
-                         'm7', 'm9',
-                         'o4', 'o12']
-var tripleLetterTiles = ['b6', 'b10',
-                         'f2', 'f6', 'f10', 'f14',
-                         'j2', 'j6', 'j10', 'j14',
-                         'n6', 'n10']
-var doubleWordTiles = ['b2', 'b14',
-                       'c3', 'c13',
-                       'd4', 'd12',
-                       'e5', 'e11',
-                       'k5', 'k11',
-                       'l4', 'l12',
-                       'm3', 'm13',
-                       'n2', 'n14']
-var tripleWordTiles = ['a1', 'a8', 'a15',
-                       'h1', 'h15',
-                       'o1', 'o8', 'o15']
-doubleLetterTiles.forEach(tile => document.querySelector('.' + tile).classList.add('double-letter'))
-tripleLetterTiles.forEach(tile => document.querySelector('.' + tile).classList.add('triple-letter'))
-doubleWordTiles.forEach(tile => document.querySelector('.' + tile).classList.add('double-word'))
-tripleWordTiles.forEach(tile => document.querySelector('.' + tile).classList.add('triple-word'))
+// draw Scrabble board
+drawScrabbleBoard()
+// draw Racks and Score Board then deal tiles
+var players = ['player1', 'player2']
+players.forEach(player => setRack(player))
 
-// board map
-// 1 - standard tile
-// 21 - 2L tile
-// 31 - 3L tile
-// 22 - 2W tile
-// 32 - 3W tile
-// 99 - starting tile
-// var boardMap = [[32, 1, 1, 21, 1, 1, 1, 32, 1, 1, 1, 21, 1, 1, 32],
-//                 [1, 22, 1, 1, 1, 31, 1, 1, 1, 31, 1, 1, 1, 22, 1],
-//                 [1, 1, 22, 1, 1, 1, 21, 1, 21, 1, 1, 1, 22, 1, 1],
-//                 [21, 1, 1, 22, 1, 1, 1, 21, 1, 1, 1, 22, 1, 1, 21],
-//                 [1, 1, 1, 1, 22, 1, 1, 1, 1, 1, 22, 1, 1, 1, 1],
-//                 [1, 31, 1, 1, 1, 31, 1, 1, 1, 31, 1, 1, 1, 31, 1],
-//                 [1, 1, 21, 1, 1, 1, 21, 1, 21, 1, 1, 1, 21, 1, 1],
-//                 [32, 1, 1, 21, 1, 1, 1, 99, 1, 1, 1, 21, 1, 1, 32],
-//                 [1, 1, 21, 1, 1, 1, 21, 1, 21, 1, 1, 1, 21, 1, 1],
-//                 [1, 31, 1, 1, 1, 31, 1, 1, 1, 31, 1, 1, 1, 31, 1],
-//                 [1, 1, 1, 1, 22, 1, 1, 1, 1, 1, 22, 1, 1, 1, 1],
-//                 [21, 1, 1, 22, 1, 1, 1, 21, 1, 1, 1, 22, 1, 1, 21],
-//                 [1, 1, 22, 1, 1, 1, 21, 1, 21, 1, 1, 1, 22, 1, 1],
-//                 [1, 22, 1, 1, 1, 31, 1, 1, 1, 31, 1, 1, 1, 22, 1],
-//                 [32, 1, 1, 21, 1, 1, 1, 32, 1, 1, 1, 21, 1, 1, 32]]
-// boardMap.forEach((row, rowIndex) => {
-//   var rowNumber = rowIndex + 1
-//   var line = document.createElement('div')
-//   line.className = 'row ' + ' row-' + rowNumber
-//   row.forEach((col, colIndex) => {
-//     var colNumber = colIndex + 1
-//     var tile = document.createElement('div')
-//     tile.className = 'tile ' + 'row-' + rowNumber + ' ' + 'col-' + colNumber
-//     tile.id = rowNumber + colNumber
-//     // add special classes for bonus tiles
-//     switch (col) {
-//       case '21':
-//         tile.classList.add('double-letter')
-//         break;
-//       case '31':
-//         tile.classList.add('triple-letter')
-//         break;
-//       case '22':
-//         tile.classList.add('double-word')
-//         break;
-//       case '32':
-//         tile.classList.add('triple-word')
-//         break;
-//       case '99':
-//         tile.classList.add('start-tile')
-//         break;
-//       default:
-//
-//     }
-//     line.appendChild(tile).classList.add(rowNumber + colNumber)
-//   })
-//   board.appendChild(line)
-// })
+// create event listeners on buttons
+document.querySelector('.reset').addEventListener('click', reset)
+document.querySelector('.submit').addEventListener('click', submit)
+document.querySelector('.pass').addEventListener('click', changePlayer)
+document.querySelector('.next').addEventListener('click', dismissScore)
+document.querySelector('.close').addEventListener('click', dismissError)
+
+function dismissScore () {
+  document.querySelector('.overlay-score').classList.toggle('hidden')
+  document.querySelector('.overlay').classList.toggle('hidden')
+  // set tiles in the board so they can't be moved anymore
+  draft.forEach(piece => {
+    piece.classList.add('set')
+  })
+  draft = []
+  // refill rack and change player
+  setRack(currentPlayer)
+  changePlayer()
+  // for (var el of document.querySelectorAll('.score-item'))
+  //   el.remove()
+  Array.from(document.querySelectorAll('.score-item')).forEach(el => el.remove())
+  document.querySelector('.total-score').remove()
+}
+
+function dismissError () {
+  document.querySelector('.overlay-error').classList.toggle('hidden')
+  document.querySelector('.overlay').classList.toggle('hidden')
+  reset()
+}
+
+changePlayer()
+
+function setRack (player) {
+  var rack = document.querySelector('.' + player + '-rack')
+  var currentTiles = Array.from(rack.querySelectorAll('.letter-piece'))
+  if (currentTiles.length < 7) {
+    for (var i = currentTiles.length; i < 7; i++) {
+      var piece = document.createElement('div')
+      var draw = dealTile()
+      piece.textContent = draw.letter.toUpperCase()
+      piece.className = 'letter-piece score-' + draw.score
+      piece.setAttribute('score', draw.score)
+      rack.appendChild(piece)
+    }
+  }
+}
+
+function dealTile () {
+  if (inventory.length > 0) {
+    var piece = sample(inventory)
+    inventory.splice(inventory.indexOf(piece), 1)
+    return piece
+  }
+}
+
+function reset () {
+  draft.forEach(piece => {
+    document.body.querySelector('.' + currentPlayer + '-rack').appendChild(piece)
+  })
+  Array.from(document.body.querySelectorAll('.draft')).forEach(el => el.classList.remove('draft'))
+  // for (var el of document.body.querySelectorAll('.draft'))
+  //   el.classList.remove('draft')
+  draft = []
+}
+
+function submit () {
+  var errors = []
+  if (draft.length > 0) {
+    // validate submission
+    // determine if letters are placed in a row or column
+    var line = validate.findDirection(draft)
+    // rearrange 'draft' based on tile position --> save into 'word'
+    if (line) {
+      var word = validate.rearrange(draft, line)
+
+      // check if word is adjacent to existing tiles or a valid first move
+      if (validate.isValidFirstMove(word) || validate.isConnectedToExistingLetters(word)) {
+        word = validate.findGaps(word, line)
+        if (word) {
+          // word is valid
+
+          var submissions = []
+          // find word along the line of the draft
+          submissions.push(search.findWords(draft[0], line))
+
+          // find words across the line of the draft
+          draft.forEach(letter => {
+            // may need to check for dupes
+            if (isNaN(line)) {
+              submissions.push(search.findWords(letter, letter.parentElement.getAttribute('col')))
+            } else {
+              submissions.push(search.findWords(letter, letter.parentElement.getAttribute('row')))
+            }
+          })
+
+          // remove single letter words
+          submissions = submissions.filter(submission => submission.length > 1)
+
+          // check words against dictionary
+          if (dictionary.checkDictionary(library, submissions)) {
+            // calculate scores
+            var results = submissions.map(submission => {
+              var temp = {
+                'word': submission.map(letter => letter.textContent).join(''),
+                'score': score.calculateWordScore(submission)
+              }
+
+              return temp
+            })
+            var totalScore = results.reduce((total, next) => { return total + next.score }, 0)
+
+            // prepare scores for overlay
+            var scoreContainer = document.querySelector('.score-container')
+
+            results.forEach(result => {
+              var scoreItem = document.createElement('div')
+              scoreItem.classList.add('score-item')
+              scoreItem.textContent = result.word + ': ' + result.score
+              scoreContainer.appendChild(scoreItem)
+            })
+            var totalScoreContainer = document.createElement('div')
+            totalScoreContainer.classList.add('total-score')
+            totalScoreContainer.textContent = 'Total Score = ' + totalScore
+            scoreContainer.appendChild(totalScoreContainer)
+
+            // update and display scores
+            if (player) {
+              playerScores[0] += totalScore
+              document.querySelector('.player1-score').textContent = playerScores[0]
+            } else {
+              playerScores[1] += totalScore
+              document.querySelector('.player2-score').textContent = playerScores[1]
+            }
+            document.querySelector('.overlay').classList.toggle('hidden')
+            document.querySelector('.overlay-score').classList.toggle('hidden')
+          } else {
+            errors.push('Words are not in the dictionary')
+          }
+        } else {
+          // reject incomplete word
+          errors.push('Incomplete word')
+        }
+      } else {
+        // reject invalid locations
+        errors.push('Word must be on starting tile or connected to existing words')
+      }
+    } else {
+      // reject invalid submission
+      errors.push('other errors')
+    }
+  } else {
+    // reject empty submission
+    errors.push('You need to submit a word or pass')
+  }
+  if (errors.length > 0) {
+    document.body.querySelector('.error-message').textContent = errors
+    document.body.querySelector('.overlay').classList.toggle('hidden')
+    document.body.querySelector('.overlay-error').classList.toggle('hidden')
+  }
+}
+
+function changePlayer () {
+  reset()
+  // disable drag and drop for current player
+  drake.containers.destroy
+  // change player
+  player = !player
+  currentPlayer = player ? 'player1' : 'player2'
+  document.body.className = currentPlayer
+  // enable drag and drop for next player
+  drake.containers = [document.querySelector('.' + currentPlayer + '-rack')]
+    .concat(Array.from(document.querySelectorAll('.board .tile')))
+}

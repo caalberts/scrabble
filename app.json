@@ -1,6 +1,6 @@
 {
-  "name":"tictactoe",
-  "description":"",
+  "name":"Scrabble",
+  "description":"A front-end two-player scrabble game created for General Assembly Web Development Immersive project submission using HTML, CSS and Javascript.",
   "scripts":{},
   "env":{},
   "addons":[]
