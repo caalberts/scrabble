@@ -5,6 +5,7 @@
 
 A front-end two-player scrabble game created for General Assembly Web Development Immersive project submission using HTML, CSS and Javascript.
 
+![Screenshot of Scrabble](docs/scrabble.png)
 
 
 ## Tools and Libraries
