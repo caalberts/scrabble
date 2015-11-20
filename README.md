@@ -7,19 +7,20 @@ A front-end two-player scrabble game created for General Assembly Web Developmen
 
 [![Screenshot of Scrabble](docs/scrabble.png)](http://scrabble.caalberts.xyz)
 
-## Tools and Libraries
-- Babelify
-- Browserify
-- brfs
-- watch-spawn
-- HTTP Server
-- Travis CI
-- Heroku
-- Dragula
-
 ## Approach
 - Scrabble board is created with DOM manipulation
 - Scrabble tiles created with an array of objects with letter and score as properties
 - User interaction created using Dragula drag and drop package
 - Built scripts to read words from the board and check against Sowpods dictionary
-- Automated testing and deployemnt workflow with GitHub, Travis and Heroku
+- Automated testing and deployment workflow with GitHub, Travis and Heroku
+
+## Tools and Libraries
+- [Babelify](https://github.com/babel/babelify)
+- [Browserify](https://github.com/substack/node-browserify)
+- [brfs](https://github.com/substack/brfs)
+- [watch-spawn](https://www.npmjs.com/package/watch-spawn)
+- [lodash](https://lodash.com/)
+- [HTTP Server](https://github.com/indexzero/http-server)
+- [Travis CI](https://travis-ci.org/)
+- [Heroku](https://www.heroku.com/)
+- [Dragula](https://github.com/bevacqua/dragula)
