@@ -7,6 +7,8 @@ A front-end two-player scrabble game created for General Assembly Web Developmen
 
 [![Screenshot of Scrabble](docs/scrabble.png)](http://scrabble.caalberts.xyz)
 
+Play scrabble [here](http://scrabble.caalberts.xyz/)
+
 ## Approach
 - Scrabble board is created with DOM manipulation
 - Scrabble tiles created with an array of objects with letter and score as properties
