@@ -20,14 +20,15 @@ var drake = dragula({
   },
   accepts: function (el, target, source, sibling) {
     return target.children.length === 0 || includes(Array.from(target.classList), 'rack')
-  }}).on('drop', (el) => {
-    // remove letter from existing draft if it's repositioned
-    if (includes(draft, el)) {
-      draft.splice(draft.indexOf(el), 1)
+  }}).on('drop', (el, target) => {
+    // remove letter from draft if it's dropped into rack
+    if (includes(Array.from(target.classList), 'rack')) {
+      el.classList.remove('draft')
+    } else if (!includes(draft, el)) {
+      // add letter into draft if it's dropped into board
+      draft.push(el)
+      el.classList.add('draft')
     }
-    // add letter into draft
-    draft.push(el)
-    el.classList.add('draft')
   })
 // draw Scrabble board
 drawScrabbleBoard()
