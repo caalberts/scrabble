@@ -18,7 +18,7 @@
     "watch-css": "npm run build-css -- --watch",
     "watch-js": "watchify game/scrabble.js --outfile dist/scrabble.js -t babelify -t brfs --verbose",
     "watch-test": "mocha --watch",
-    "watch-img": "watch-spawn -p 'game/img' npm run build-img"
+    "watch-img": "watch-spawn -p 'game/img/' npm run build-img"
   },
   "repository": {
     "type": "git",
