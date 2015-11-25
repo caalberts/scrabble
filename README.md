@@ -1,5 +1,7 @@
 # Scrabble
 
+[![Join the chat at https://gitter.im/caalberts/scrabble](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/caalberts/scrabble?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Travis Build Status](https://img.shields.io/travis/caalberts/scrabble.svg?style=flat-square)](https://travis-ci.org/caalberts/scrabble)
 [![Gemnasium Status](https://img.shields.io/gemnasium/caalberts/scrabble.svg?style=flat-square)](https://gemnasium.com/caalberts/scrabble)
 
