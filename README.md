@@ -7,9 +7,9 @@
 
 A front-end two-player scrabble game created for General Assembly Web Development Immersive project submission using HTML, CSS and Javascript.
 
-[![Screenshot of Scrabble](docs/scrabble.png)](http://scrabble.caalberts.xyz)
+[![Screenshot of Scrabble](docs/scrabble.png)](https://scrabble.caalberts.xyz)
 
-Play scrabble [here](http://scrabble.caalberts.xyz/)
+Play scrabble [here](https://scrabble.caalberts.xyz/)
 
 ## Approach
 - Scrabble board is created with DOM manipulation
