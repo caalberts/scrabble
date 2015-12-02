@@ -23,11 +23,15 @@ var drake = dragula({
   }}).on('drop', (el, target) => {
     // remove letter from draft if it's dropped into rack
     if (includes(Array.from(target.classList), 'rack')) {
+      console.log('dropped in rack')
       el.classList.remove('draft')
-    } else if (!includes(draft, el)) {
+      draft.splice(draft.findIndex(content => content === el), 1)
+    } else {
       // add letter into draft if it's dropped into board
-      draft.push(el)
-      el.classList.add('draft')
+      if (!includes(draft, el)) {
+        draft.push(el)
+        el.classList.add('draft')
+      }
     }
   })
 // draw Scrabble board
